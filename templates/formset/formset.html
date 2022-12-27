@@ -1,0 +1,166 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load field_helpers %}
+<table>
+  {{ formset.management_form|crispy }}
+
+  {% for form in formset.forms %}
+    <tr {% if allowOrder %}draggable="true"{% endif %}
+        id="row-{{ forloop.counter }}"
+        class="{% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }} table-row-custom">
+      {% for field in form.visible_fields %}
+        <td data-field-type="{{ field|field_widget_type }}" data-field-name="{{ field.name }}">
+          {# Include the hidden fields in the form #}
+          {% if forloop.first %}
+            {% for hidden in form.hidden_fields %}
+              {{ hidden }}
+            {% endfor %}
+          {% endif %}
+          {{ field|as_crispy_field }}
+
+        </td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+
+<script src="{% static 'formset/jquery.formset.js' %}">
+</script>
+<script type="text/javascript">
+{% if allowOrder %}
+  // DnD
+  let cols = null;
+  let movedId = null;
+
+  function handleDragStart(e) {
+    this.style.opacity = '0.4';
+
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.id);
+    movedId = this.id;
+  }
+
+  function handleDragOver(e) {
+    this.classList.add('over');
+    if (e.preventDefault) {
+      e.preventDefault(); // Necessary. Allows us to drop.
+    }
+
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+  }
+
+  function handleDragEnter(e) {
+    this.classList.add('over');
+  }
+
+  function handleDragLeave(e) {
+    this.classList.remove('over');
+  }
+
+  function handleDrop(e) {
+    if (e.stopPropagation) {
+      e.stopPropagation(); // Stops some browsers from redirecting.
+    }
+
+    // Don't do anything if dropping the same column we're dragging.
+    if (this.id === movedId) {
+      return false;
+    }
+
+    // parse from element
+    let fromElement = $(`#${movedId}`);
+    const fromOrderElement = fromElement.find('input[id$="ORDER"]');
+
+    // parse to element
+    let toElement = $(this);
+    const toOrderElement = toElement.find('input[id$="ORDER"]');
+
+    // get parent and swap elements
+    const parent = fromElement.parent();
+    if (parent.index(fromElement) > parent.index(toElement)) {
+      const tmp = fromElement;
+      fromElement = toElement;
+      toElement = tmp;
+    }
+
+    const nextElement = fromElement.next();
+    if (nextElement === toElement) {
+      nextElement.after(fromElement);
+    } else {
+      toElement.after(fromElement);
+      nextElement.before(toElement);
+    }
+
+    // swap orders
+    const tmp = fromOrderElement.val();
+    fromOrderElement.val(toOrderElement.val());
+    toOrderElement.val(tmp);
+
+    return false;
+  }
+
+  function handleDragEnd(e) {
+    [].forEach.call(cols, function (col) {
+      col.classList.remove('over');
+    });
+
+    this.style.opacity = '1';
+    movedId = null;
+  }
+
+  const initializeDnD = () => {
+    cols = document.querySelectorAll('.table-row-custom');
+
+    [].forEach.call(cols, function (col) {
+      col.addEventListener('dragstart', handleDragStart, false);
+      col.addEventListener('dragenter', handleDragEnter, false);
+      col.addEventListener('dragover', handleDragOver, false);
+      col.addEventListener('dragleave', handleDragLeave, false);
+      col.addEventListener('drop', handleDrop, false);
+      col.addEventListener('dragend', handleDragEnd, false);
+    });
+  };
+
+  initializeDnD();
+{% endif %}
+
+  $('.formset_row-{{ formset.prefix }}').formset({
+    addText: 'Add',
+    addCssClass: 'btn btn-success',
+    deleteText: 'Remove',
+    deleteCssClass: 'btn btn-danger danger-button-custom',
+    prefix: '{{ formset.prefix }}',
+    {% if allowOrder %}
+      added: initializeDnD,
+    {% endif %}
+  });
+</script>
+<style>
+  .table-row-custom {
+    vertical-align: top;
+  }
+
+  .table-row-custom.over {
+    outline: 2px dashed #000;
+  }
+
+  tr.table-row-custom[draggable="true"]:hover {
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.35);
+    transition: box-shadow 0.3s ease-in-out;
+  }
+
+  .table-row-custom td:last-child {
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  .custom-control {
+    min-height: 1rem;
+  }
+
+  td[data-field-type='checkbox']:not([data-field-name='DELETE']) {
+    padding-top: 2rem;
+    vertical-align: middle;
+  }
+</style>

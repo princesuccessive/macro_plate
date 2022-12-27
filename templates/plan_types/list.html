@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="d-flex justify-content-between">
+    <h2>Plan Types</h2>
+    <div>
+      <a class="btn btn-primary" href="{% url 'plan-type-add' %}">
+        Add new Plan Type
+      </a>
+    </div>
+  </div>
+
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Customers</th>
+      <th scope="col">Meals</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for plan_type in plan_type_list %}
+      <tr data-href="{% url 'plan-type-update' plan_type.id %}">
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ plan_type.name }}</td>
+        <td>{{ plan_type.customers.count }}</td>
+        <td>{{ plan_type.meals.count }}</td>
+      </tr>
+        {% empty %}
+      <tr>
+        <td colspan="4" class="text-center">No Plan Types</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+<div>
+  {{ label }}:
+  <ol class="list">
+      {% for assigned_meal in items %}
+        <li>
+            {{ assigned_meal.meal.name }}
+          <div class="mods">
+              {{ assigned_meal.mods }}
+          </div>
+        </li>
+      {% endfor %}
+  </ol>
+</div>

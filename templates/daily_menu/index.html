@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+  <h2>Daily Menu Planner</h2>
+
+  <div class="row">
+    <div class="col-6">
+      <form class="row" method="post" action="{% url 'daily-menu' %}">
+        {% csrf_token %}
+        <div class="col-8">
+          {{ form_date.date|as_crispy_field }}
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label for="">&nbsp;</label>
+            <div>
+              <button class="btn btn-info form-control" type="submit">Open</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-6">
+      <form class="row" method="post" action="{% url 'daily-menu-edit' date=date %}">
+        {% csrf_token %}
+        <div class="col-8">
+          {{ form_date_copy.date|as_crispy_field }}
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label for="">&nbsp;</label>
+            <div>
+              <button class="btn btn-warning form-control" type="submit">Copy</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- VUE JS APP -->
+  <div id="congifurator" class="mt-2">
+    <h3>Configure menu ({{ date }})</h3>
+    <!-- Selector to add new meals -->
+    <div class="mb-3">
+      <div class="dropdown bootstrap-select form-control">
+        <select v-model="selectedMeal"
+                title="Select meal to add to the menu"
+                class="selectpicker form-control"
+                data-live-search="true"
+                data-style="custom-select-picker">
+          <optgroup v-for="(meals, planTypeId) in groupedNotAssignedMeals"
+                    :key="planTypeId"
+                    :label="getPlanName(planTypeId)">
+            <option v-for="meal in meals"
+                    :key="meal.id"
+                    :value="meal"
+                    :data-subtext="meal.breakfast ? 'breakfast' : 'regular'">
+              [[ meal.name ]]
+            </option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+
+    <!-- Already added items -->
+    <template v-for="planTypeId in planTypesIds">
+      <ul v-if="(groupedAssignedMeals[planTypeId] || []).length"
+          class="list-group mb-3">
+        <li class="list-group-item list-group-item-primary">
+          [[ getPlanName(planTypeId) ]]
+        </li>
+        <draggable v-model="groupedAssignedMeals[planTypeId]">
+          <transition-group type="transition" name="flip-list">
+            <li v-for="meal in groupedAssignedMeals[planTypeId]"
+                :key="meal.id"
+                class="list-group-item d-flex justify-content-between align-items-center meal-list-item">
+                <span>
+                  [[ meal.name ]]
+                  <small class="text-muted">[[ meal.breakfast ? 'breakfast' : 'regular' ]]</small>
+                </span>
+
+              <button type="button"
+                      class="btn btn-light"
+                      @click="deleteMeal(meal)">
+                <span class="glyphicon glyphicon-trash"></span>
+              </button>
+            </li>
+          </transition-group>
+        </draggable>
+      </ul>
+    </template>
+
+    <button class="btn btn-success mb-3"
+            style="width: 100%"
+            type="button"
+            @click="save()">
+      SAVE
+    </button>
+  </div>
+
+  <script>
+    const ASSIGNED_MEALS = {{ menu_items | safe }};
+    const MEALS = {{ meals | safe }};
+    const CSRF_TOKEN = $("[name=csrfmiddlewaretoken]").val();
+    const SAVE_URL = "{% url 'daily-menu-save' date=date %}";
+    const DROPDOWN = $('.selectpicker');
+  </script>
+
+  <!-- Daily menu configurator -->
+  <script src="{% static 'daily-menu/configurator.js' %}"></script>
+
+  <style>
+    .flip-list-move {
+      transition: transform 0.5s;
+    }
+
+    .meal-list-item {
+      background-color: #fafafa;
+    }
+  </style>
+{% endblock %}
+

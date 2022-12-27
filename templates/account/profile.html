@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h2>User Profile</h2>
+  <div class="row">
+    <div class="col-6">
+      <div class="row">
+        <div class="col-3">First name:</div>
+        <div class="col-6">{{ user.first_name }}</div>
+      </div>
+      <div class="row">
+        <div class="col-3">Last name:</div>
+        <div class="col-6">{{ user.last_name }}</div>
+      </div>
+      <div class="row">
+        <div class="col-3">User name:</div>
+        <div class="col-6">{{ user.username }}</div>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <h3>Change password</h3>
+      <form method="post">{% csrf_token %}
+        {{ form|as_crispy_errors }}
+        {{ form|crispy }}
+
+        <button class="btn btn-info" type="submit">Change password</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

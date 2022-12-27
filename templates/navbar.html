@@ -1,0 +1,70 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">MacroPlate</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse"
+          data-target="#navbarNav" aria-controls="navbarNav"
+          aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <!-- LEFT SIDE -->
+    <ul class="navbar-nav mr-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item {% if request.resolver_match.url_name == 'dashboard-select' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'dashboard-select' %}">Dashboard</a>
+          </li>
+          <li class="nav-item {% if request.resolver_match.url_name == 'customer-list' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'customer-list' %}">Customers</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+              Menu
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'daily-menu' %}">Daily Menu Planner</a>
+              <a class="dropdown-item" href="{% url 'assigned-menus-select-day' %}">Assigned menus</a>
+            </div>
+          </li>
+          <li class="nav-item {% if request.resolver_match.url_name == 'schedules-daily-default-select' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'schedules-daily-default-select' %}">Daily Schedules</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardropmeals" data-toggle="dropdown">
+              Meals
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'meal-list' %}">Meals</a>
+              <a class="dropdown-item" href="{% url 'ingredient-list' %}">Ingredients</a>
+              <a class="dropdown-item" href="{% url 'preference-list' %}">Preferences</a>
+              <a class="dropdown-item" href="{% url 'meals-import-export' %}">Import / Export</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'plan-type-list' %}">Plan Types</a>
+          </li>
+        {% endif %}
+    </ul>
+    <!-- RIGHT SIDE -->
+    <ul class="navbar-nav">
+        {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                {{ user.username }}
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'account-profile' %}">Profile</a>
+                {% if user.is_staff %}
+                  <a class="dropdown-item" href="{% url 'admin:index' %}">Super Admin panel</a>
+                {% endif %}
+              <a class="dropdown-item" href="{% url 'account-logout' %}">Logout</a>
+            </div>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account-login' %}">Login</a>
+          </li>
+        {% endif %}
+    </ul>
+  </div>
+</nav>
+
+

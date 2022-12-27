@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% if meal.id %}
+      <h2>Add new Meal</h2>
+    {% else %}
+      <h2>Edit <strong>{{ meal.name }}</strong></h2>
+    {% endif %}
+
+  <form method="post">
+      {% csrf_token %}
+
+      {% crispy form %}
+  </form>
+
+{% endblock %}

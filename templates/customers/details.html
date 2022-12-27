@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  {% csrf_token %}
+
+  <div class="d-flex justify-content-between">
+    <h2>Customer Details</h2>
+    <div>
+      <a class="btn btn-info" href="{% url 'customer-update' customer.id %}">Edit</a>
+      <a class="btn btn-danger" href="{% url 'customer-delete' customer.id %}">Delete</a>
+      <a class="btn btn-primary" href="{% url 'customer-note-add' customer.id %}">Add Note</a>
+    </div>
+  </div>
+
+  <h3>Personal Info:</h3>
+  <div class="row">
+    <div class="col-6">
+      <strong>First Name:</strong> {{ customer.first_name }}<br/>
+      <strong>Last Name:</strong> {{ customer.last_name }}<br/>
+      <strong>Email:</strong> {{ customer.email }}<br/>
+    </div>
+    <div class="col-6">
+      <strong>Phone Number:</strong> {{ customer.phone_number }}<br/>
+      <strong>External ID:</strong> {{ customer.external_id }}<br/>
+    </div>
+  </div>
+  <hr>
+
+  <h3>Delivery Info</h3>
+  <div class="row">
+    <div class="col-6">
+      <strong>Address:</strong> {{ customer.address }}<br/>
+      <strong>Suite:</strong> {{ customer.suite }}<br/>
+      <strong>City:</strong> {{ customer.city }}<br/>
+      <strong>Zip:</strong> {{ customer.zip }}<br/>
+    </div>
+    <div class="col-6">
+      <p><strong>Delivery Notes:</strong> {{ customer.delivery_notes }}</p>
+      <p><strong>Delivery Window:</strong> {{ customer.delivery_window }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <strong>RED:</strong> <input type="checkbox" disabled="disabled" name="published" {% if customer.red %}checked{% endif %}/><br>
+      <strong>Promo Code:</strong> {{ customer.promo_code }}
+    </div>
+  </div>
+
+  <hr>
+
+  <h3>Plan Info</h3>
+  <div class="row">
+    <div class="col-6">
+      <p>Plan Type: {{ customer.plan_type }}</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col-6">
+      <h3>Protein Snack</h3>
+      <p>Snacks count: {{ customer.get_snacks_count_display }}</p>
+      <p>Snacks notes: {{ customer.snacks_notes }}</p>
+      <p>Gluten Free?
+        <input type="checkbox" disabled="disabled" name="published" {% if customer.gluten_free %}checked{% endif %}/>
+      </p>
+      <p>Nut Free?
+        <input type="checkbox" disabled="disabled" name="published" {% if customer.nut_free %}checked{% endif %}/>
+      </p>
+    </div>
+    <div class="col-6">
+      <h3>Cold Drinks</h3>
+      <p>Juice Count: {{ customer.get_juice_count_display }}</p>
+      <p>Juice Requested: {{ customer.juice_requested }}</p>
+      <p>Juice Dislikes: {{ customer.juice_dislikes }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <p>Coffee Count {{ customer.coffee_count }}</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <h3>Weekly Delivery Schedule</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <tbody>
+          <tr>
+            {% for schedule in customer.daily_schedules.only_default.order_by_weekday %}
+            <td>
+              <div class="row">
+                <b>{{ schedule.get_day_of_week_display }}</b>
+              </div>
+              <div class="row">Has Delivery?&nbsp;
+                <input type="checkbox" disabled="disabled" name="published" {% if schedule.has_delivery %}checked{% endif %}/>
+              </div>
+              <div class="row">Lunches: {{ schedule.lunches }}</div>
+              <div class="row">Breakfast: {{ schedule.breakfasts }}</div>
+            </td>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col-6">
+      <h3>Preferences</h3>
+      {% if customer.preferences.exists %}
+        <ul>
+          {% for preference in customer.preferences.all %}
+            <li>{{ preference.name }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        No preferences
+      {% endif %}
+    </div>
+
+    <div class="col-6">
+      <h3>Meal Exclusion</h3>
+      {% if customer.excluded_meals.exists %}
+        <ul>
+          {% for meal in customer.excluded_meals.all %}
+            <li>{{ meal.name }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        No meals excluded
+      {% endif %}
+
+      <h3>Preferred meals</h3>
+      {% if customer.preferred_meals.exists %}
+        <ul>
+          {% for meal in customer.preferred_meals.all %}
+            <li>{{ meal.name }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        No preferred meals
+      {% endif %}
+      {% if customer.preferences_notes %}
+        <h3>Preferences Notes</h3>
+        {{ customer.preferences_notes }}
+      {% endif %}
+    </div>
+  </div>
+
+  <hr>
+
+  <h3>Macros</h3>
+  <div class="row">
+    <div class="col-6">
+      <p>Carbs: {{ customer.carbs }}</p>
+      <p>Protein: {{ customer.protein }}</p>
+    </div>
+    <div class="col-6">
+      <p>Fat: {{ customer.fat }}</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3>Meal Assignment</h3>
+  <div class="row">
+    <div class="col-6">
+      <p>First Delivery: {{ customer.first_delivery_date }}</p>
+    </div>
+    <div class="col-6">
+      <p>Customer Paused?
+        <input type="checkbox" disabled="disabled" name="published"
+               {% if customer.meal_assignment_paused %}checked{% endif %}/>
+      </p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3>Notes</h3>
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Title</th>
+      <th scope="col">Text</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for note in customer.notes.all %}
+      <tr>
+        <td>{{ note.date | date:"m/d/yy" }}</td>
+        <td>{{ note.title }}</td>
+        <td style="white-space: pre-line">{{ note.text }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center">No Notes</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <a class="btn btn-info" href="{% url 'customer-note-add' customer.id %}">Add Note</a>
+{% endblock %}
+

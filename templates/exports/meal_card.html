@@ -1,0 +1,89 @@
+<html>
+<head>
+  <style>
+    @page {
+      size: letter portrait;
+      @frame content_frame {
+        left: 50pt;
+        width: 512pt;
+        top: 50pt;
+        height: 692pt;
+      }
+    }
+
+    * {
+      font-size: 18pt;
+      line-height: 20pt;
+    }
+
+    .separator {
+      -pdf-keep-with-next: false;
+      font-size: 0.5em;
+      line-height: 0.5em;
+    }
+
+    .name {
+      font-size: 2em;
+    }
+
+    .plan {
+      font-size: 1.5em;
+    }
+
+    .list {
+      padding-left: 20px;
+    }
+
+    .mods {
+      font-style: italic;
+      padding-left: 40px;
+    }
+
+    .preferences {
+      font-size: 1.2em;
+    }
+
+    .notes {
+      font-size: 1.2em;
+    }
+
+    .red {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+  <div class="name">{{ page.customer.full_name }}</div>
+  <div class="plan">{{ page.customer.plan_string }}</div>
+  <span class="separator">&nbsp;</span>
+
+  <div>
+    Totals:
+    &nbsp;&nbsp;
+    Breakfasts: {{ page.breakfast|length }},
+    Lunches: {{ page.lunch|length }}
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    {% if page.customer.red %}<span class="red"><strong>Red Bag</strong></span>{% endif %}
+  </div>
+  <hr>
+
+  {% include 'exports/meal_card_meals_list.html' with label='Breakfasts' items=page.breakfast %}
+  <span class="separator">&nbsp;</span>
+  {% include 'exports/meal_card_meals_list.html' with label='Lunches' items=page.lunch %}
+  <hr>
+
+  <div class="{% if page.customer.red %} red{% endif %}">
+    <div class="preferences">
+      {{ page.customer.preferences_names }}
+    </div>
+    <span class="separator">&nbsp;</span>
+    <div class="notes">
+      {{ page.customer.preferences_notes }}
+    </div>
+  </div>
+</div>
+</body>
+</html>

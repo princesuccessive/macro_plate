@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    {% if ingredient.id %}
+      <h2>Edit <strong>{{ ingredient.name }}</strong></h2>
+    {% else %}
+      <h2>Create new Ingredient</h2>
+    {% endif %}
+
+  <form method="post" class="row">
+      {% csrf_token %}
+      {% crispy form %}
+    <div class="col-12">
+      <button class="btn btn-success" type="submit">Save</button>
+        {% if ingredient.id %}
+          <a class="btn btn-danger" href="{% url 'ingredient-delete' ingredient.id %}">Delete</a>
+        {% endif %}
+    </div>
+  </form>
+
+{% endblock %}

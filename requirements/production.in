@@ -1,0 +1,80 @@
+# *************************************************
+# Django packages
+# *************************************************
+django==2.2.4
+
+# ORM Caching layer for Django Models
+django-cacheops
+
+# Control CORS headers from within the app
+django-cors-headers
+
+# filter querysets dynamically
+django-filter
+
+# Nice addons to simplify ORM layer
+django-model-utils
+
+# Django REST Framework
+djangorestframework
+django-rest-auth
+drf-writable-nested
+
+# Database abstraction layer
+psycopg2-binary
+
+# Timezones and datetime utils
+pytz
+
+# redis SDK
+redis
+django-redis
+
+# Celery
+celery[redis]==5.2.*
+django-celery-beat==2.2.*
+
+# nice string conversion procedures
+inflection
+
+# Fast creatin of model instances. May be used in tests
+factory_boy
+
+# boltons = super cool batteries included
+# https://boltons.readthedocs.io/en/latest/
+boltons
+
+# Bind actions on every object in admin object view
+django-object-actions
+
+# Freeze time for tests
+freezegun
+
+# Constance - Dynamic Django settings
+django-constance
+django-constance[database]
+django-picklefield
+
+# ip management
+IPy
+
+# mock data
+mock
+
+# nice forms with bootstrap4
+django-crispy-forms
+
+# working with exports to csv and so on
+tablib
+
+# convert html to pdf
+xhtml2pdf==0.2.5
+
+django-bootstrap-datepicker-plus
+
+django-storages
+boto3
+
+# uwsgi
+pyuwsgi
+uwsgitop

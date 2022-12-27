@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    {% if plan_type.id %}
+      <h2>Edit <strong>{{ plan_type.name }}</strong></h2>
+    {% else %}
+      <h2>Create new Plan Type</h2>
+    {% endif %}
+
+  <form method="post">
+      {% crispy form %}
+    <button class="btn btn-success" type="submit">Save</button>
+      {% if plan_type.id %}
+        <a class="btn btn-danger" href="{% url 'plan-type-delete' plan_type.id %}">Delete</a>
+      {% endif %}
+  </form>
+
+{% endblock %}

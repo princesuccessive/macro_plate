@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+  <h2>Add the note</h2>
+
+  <form method="post" class="row">
+    {% csrf_token %}
+    {% crispy form %}
+    <div class="col-12">
+      <button class="btn btn-success" type="submit">Add</button>
+    </div>
+  </form>
+{% endblock %}

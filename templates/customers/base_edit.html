@@ -1,0 +1,124 @@
+{% load crispy_forms_tags %}
+
+<form method="post">
+    {% csrf_token %}
+
+  <h3>Personal Info</h3>
+  <div class="row">
+    <div class="col-6">
+      <p>{{ form.first_name|as_crispy_field }}</p>
+    </div>
+    <div class="col-6">
+      <p>{{ form.last_name|as_crispy_field }}</p>
+    </div>
+    <div class="col-6">
+      <p>{{ form.email|as_crispy_field }}</p>
+    </div>
+    <div class="col-6">
+      <p>{{ form.phone_number|as_crispy_field }}</p>
+    </div>
+  </div>
+  <hr>
+
+  <h3>Delivery Info</h3>
+  <div class="row">
+    <div class="col-6">
+      <p>{{ form.address|as_crispy_field }}</p>
+    </div>
+    <div class="col-6">
+      <p>{{ form.suite|as_crispy_field }}</p>
+      <p>{{ form.city|as_crispy_field }}</p>
+      <p>{{ form.zip|as_crispy_field }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <p>{{ form.delivery_notes|as_crispy_field }}</p>
+    </div>
+    <div class="col-6">
+      <p>{{ form.delivery_window|as_crispy_field }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <p>{{ form.red|as_crispy_field }}</p>
+    </div>
+    <div class="col-6">
+      <p>{{ form.promo_code|as_crispy_field }}</p>
+    </div>
+  </div>
+  <hr>
+
+  <h3>Plan Info</h3>
+  <div class="row">
+    <div class="col-6">
+      <p>{{ form.plan_type|as_crispy_field }}</p>
+    </div>
+    <div class="col-6">
+      <p>{{ form.plan_priority|as_crispy_field }}</p>
+    </div>
+  </div>
+  <hr>
+
+  <div class="row">
+    <div class="col-6">
+      <h3>Protein Snack</h3>
+      <p>{{ form.snacks_count|as_crispy_field }}</p>
+      <p>{{ form.snacks_notes|as_crispy_field }}</p>
+      <p>{{ form.gluten_free|as_crispy_field }}</p>
+      <p>{{ form.nut_free|as_crispy_field }}</p>
+    </div>
+    <div class="col-6">
+      <h3>Cold Drinks</h3>
+      <p>{{ form.juice_count|as_crispy_field }}</p>
+      <p>{{ form.juice_requested|as_crispy_field }}</p>
+      <p>{{ form.juice_dislikes|as_crispy_field }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <p>{{ form.coffee_count|as_crispy_field }}</p>
+    </div>
+  </div>
+  <hr>
+
+  <h3>Macros</h3>
+  <div class="row">
+    <div class="col-6">
+      <p>{{ form.carbs|as_crispy_field }}</p>
+      <p>{{ form.protein|as_crispy_field }}</p>
+    </div>
+    <div class="col-6">
+      <p>{{ form.fat|as_crispy_field }}</p>
+    </div>
+  </div>
+  <hr>
+
+  <div class="row">
+    <div class="col-6">
+        {{ form.preferences|as_crispy_field }}
+      {% if edit %}
+        {{ form.excluded_meals|as_crispy_field }}
+        {{ form.preferred_meals|as_crispy_field }}
+      {% endif %}
+    </div>
+    <div class="col-6">
+        {{ form.preferences_notes|as_crispy_field }}
+    </div>
+  </div>
+  <hr>
+
+  <h3>Meal Assignment</h3>
+  <div class="row">
+    <div class="col-6">
+      <p>{{ form.first_delivery_date|as_crispy_field }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+        {{ form.meal_assignment_paused|as_crispy_field }}
+    </div>
+  </div>
+  <hr>
+  <button class="btn btn-success" type="submit">Save</button>
+</form>

@@ -1,0 +1,23 @@
+.alert {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.custom-select-picker {
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+  color: #495057;
+}
+
+.bootstrap-select {
+  height: auto;
+}
+
+.custom-select-picker .filter-option {
+  white-space: normal;
+}
+
+.hidden {
+  display: none;
+}

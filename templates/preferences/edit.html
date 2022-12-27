@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% if preference.id %}
+      <h2>Edit <strong>{{ preference.name }}</strong></h2>
+    {% else %}
+      <h2>Create new Preference</h2>
+    {% endif %}
+
+  <form method="post">
+      {% csrf_token %}
+
+    {{ form|as_crispy_errors }}
+
+    <div class="row">
+      <div class="col-6">
+          {{ form.name|as_crispy_field }}
+      </div>
+    </div>
+    <button class="btn btn-success" type="submit">Save</button>
+      {% if preference.id %}
+        <a class="btn btn-danger" href="{% url 'preference-delete' preference.id %}">Delete</a>
+      {% endif %}
+  </form>
+
+{% endblock %}

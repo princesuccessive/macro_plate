@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="d-flex justify-content-between">
+    <div>
+      <h2>{{ customer }} on {{ current_date }}</h2>
+    </div>
+    <div>
+      <a class="btn btn-secondary" href="{% url 'assigned-menus' date=current_date %}">
+        Cancel
+      </a>
+      <button class="btn btn-success" type="submit" form="assignedForm">
+        Save
+      </button>
+    </div>
+  </div>
+
+  <form id="assignedForm" method="post" action="">
+    <div class="row">
+        {% csrf_token %}
+      <div class="col-12">
+          {{ form|as_crispy_errors }}
+      </div>
+      <div class="col-3">
+        <h4>Preferences:</h4>
+        {{ customer.preferences_names }}
+      </div>
+      <div class="col-3">
+        <h4>Macros:</h4>
+        Carbs: {{ customer.carbs }}<br>
+        Protein: {{ customer.protein }}<br>
+        Fat: {{ customer.fat }}<br>
+      </div>
+      <div class="col-3">
+        <h4>Meals:</h4>
+        Breakfasts: {{ daily_schedule.breakfasts }} ({{ assigned_meals_by_types.breakfast|length }})<br>
+        Lunches: {{ daily_schedule.lunches }} ({{ assigned_meals_by_types.lunch|length }})<br>
+      </div>
+      <div class="col-3">
+          {{ form.has_issues|as_crispy_field }}
+      </div>
+      <div class="col-12" style="margin-top: 10px">
+        {% crispy form %}
+      </div>
+    </div>
+  </form>
+{% endblock %}
+

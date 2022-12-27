@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h2>Edit <strong>{{ customer.full_name }}</strong></h2>
+  <hr>
+
+    {% include 'customers/base_edit.html' with edit=True %}
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% load get_url_params_without_page %}
+{% get_url_params_without_page as url_params_without_page %}
+
+{% if items.has_other_pages %}
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <!-- FIRST/PREVIOUS PAGES -->
+      {% if items.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1{{ url_params_without_page }}">First</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ items.previous_page_number }}{{ url_params_without_page }}">Previous</a></li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#"><span>First</span></a></li>
+        <li class="page-item disabled"><a class="page-link" href="#"><span>Previous</span></a></li>
+      {% endif %}
+
+      <!-- NEIGHBORS PAGES -->
+      {% for i in items.paginator.page_range %}
+        {% if i <= items.number|add:5 and i >= items.number|add:-5 %}
+          {% if items.number == i %}
+            <li class="page-item active">
+              <a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
+            </li>
+          {% else %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ i }}{{ url_params_without_page }}">{{ i }}</a>
+            </li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
+      <!-- NEXT/LAST PAGES -->
+      {% if items.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ items.next_page_number }}{{ url_params_without_page }}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ items.paginator.num_pages }}{{ url_params_without_page }}">Last</a></li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#"><span>Next</span></a></li>
+        <li class="page-item disabled"><a class="page-link" href="#"><span>Last</span></a></li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}

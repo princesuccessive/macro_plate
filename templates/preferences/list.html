@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="d-flex justify-content-between">
+    <h2>Preferences</h2>
+    <div>
+      <a class="btn btn-primary" href="{% url 'preference-add' %}">
+        Add new Preference
+      </a>
+    </div>
+  </div>
+
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Customers</th>
+      <th scope="col">Ingredients</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for preference in preference_list %}
+      <tr data-href="{% url 'preference-update' preference.id %}">
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ preference.name }}</td>
+        <td>{{ preference.customers.count }}</td>
+        <td>{{ preference.ingredients.count }}</td>
+      </tr>
+        {% empty %}
+      <tr>
+        <td colspan="4" class="text-center">No Preferences</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

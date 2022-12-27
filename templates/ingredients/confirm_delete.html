@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+  <h2>Delete Ingredient?</h2>
+  <form method="post">
+      {% csrf_token %}
+
+    <p>Are you sure you want to delete <strong>{{ ingredient.name }}</strong> Ingredient?</p>
+    <button class="btn btn-danger" type="submit">Yes, delete</button>
+    <a class="btn btn-info" href="{% url 'ingredient-update' ingredient.id %}">No</a>
+  </form>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h2>Default Daily schedules</h2>
+
+  <h3>Select Customer and Day of week</h3>
+  <form method="post" action="{% url 'schedules-daily-default-select' %}">
+      {% csrf_token %}
+    <div class="row">
+      <div class="col-6">
+          {{ form_select.customer|as_crispy_field }}
+      </div>
+      <div class="col-6">
+          {{ form_select.day_of_week|as_crispy_field }}
+      </div>
+    </div>
+    <button class="btn btn-info" type="submit">Open</button>
+  </form>
+  <h3>Enter Default Schedule of selected day</h3>
+
+  <form method="post">
+      {% csrf_token %}
+    <div class="row">
+      <div class="col-12">
+          {{ form | as_crispy_errors }}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-4">{{ form.breakfasts|as_crispy_field }}</div>
+      <div class="col-4">{{ form.lunches|as_crispy_field }}</div>
+      <div class="col-4">{{ form.has_delivery|as_crispy_field }}</div>
+    </div>
+    <button class="btn btn-success" type="submit">Save</button>
+  </form>
+{% endblock %}
+

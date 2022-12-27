@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h2>Assigned Menus</h2>
+
+  <h4>Please select a date to work with assigned menus</h4>
+    <form class="row" method="post" action="{% url 'assigned-menus-select-day' %}">
+      {% csrf_token %}
+    <div class="col-8">
+        {{ form_date_select.date|as_crispy_field }}
+    </div>
+    <div class="col-4">
+      <div class="form-group">
+        <label for="">&nbsp;</label>
+        <div>
+          <button class="btn btn-info form-control" type="submit">Select</button>
+        </div>
+      </div>
+    </div>
+  </form>
+{% endblock %}
+

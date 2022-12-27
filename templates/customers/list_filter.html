@@ -1,0 +1,59 @@
+<div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Filter
+  </button>
+  <div class="dropdown-menu" style="min-width: 300px;">
+    <form class="px-2 py-2">
+      <div class="form-row">
+        <div class="form-group col-6">
+          <label for="statusSelect">Status</label>
+          <select class="form-control" id="statusSelect" name="status">
+            <option value="">All</option>
+            <option {% if request.GET.status == "Current" %}selected{% endif %}>Current</option>
+            <option {% if request.GET.status == "Week 1" %}selected{% endif %}>Week 1</option>
+            <option {% if request.GET.status == "Week 2" %}selected{% endif %}>Week 2</option>
+          </select>
+        </div>
+        <div class="form-group col-6">
+          <label for="activeSelect">Active</label>
+          <select class="form-control" id="activeSelect" name="active">
+            <option value="">All</option>
+            <option {% if request.GET.active == "Yes" %}selected{% endif %}>Yes</option>
+            <option {% if request.GET.active == "No" %}selected{% endif %}>No</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-6">
+          <label for="redSelect">Red</label>
+          <select class="form-control" id="redSelect" name="red">
+            <option value="">All</option>
+            <option {% if request.GET.red == "Yes" %}selected{% endif %}>Yes</option>
+            <option {% if request.GET.red == "No" %}selected{% endif %}>No</option>
+          </select>
+        </div>
+        <div class="form-group col-6">
+          <label for="planSourceSelect">Plan Source</label>
+          <select class="form-control" id="planSourceSelect" name="plan_source">
+            <option value="">All</option>
+            <option {% if request.GET.plan_source == "Primary" %}selected{% endif %}>Primary</option>
+            <option {% if request.GET.plan_source == "Secondary" %}selected{% endif %}>Secondary</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="planTypeSelect">Plan Type</label>
+        <select class="form-control" id="planTypeSelect" name="plan_type">
+          <option value="">All</option>
+          {% for plan_type in plan_types %}
+            <option {% if request.GET.plan_type == plan_type %}selected{% endif %}>
+              {{ plan_type }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <a href="{% url 'customer-list' %}"><button type="button" class="btn btn-danger">Reset</button></a>
+      <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+  </div>
+</div>

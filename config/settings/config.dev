@@ -1,0 +1,93 @@
+import os
+
+from .common import *
+
+DEBUG = os.getenv("DEBUG", "{{$.app_debug}}".lower() == "true")
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
+# ------------------------------------------------------------------------------
+# DATABASES - PostgreSQL
+# ------------------------------------------------------------------------------
+DATABASES = {
+    "default": {
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": "{{$.rds_db_name}}",
+        "USER": "{{$.rds_db_user}}",
+        "PASSWORD": "{{$.rds_db_password}}",
+        "HOST": "{{$.rds_db_host}}",
+        "PORT": "{{$.rds_db_port}}",
+        "ATOMIC_REQUESTS": True,
+    },
+}
+
+USE_CELERY = 'True'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+if DEBUG:
+  INSTALLED_APPS += (
+      'debug_toolbar',
+      'django_extensions',
+  )
+
+  MIDDLEWARE += (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+   )
+
+
+# ------------------------------------------------------------------------------
+# AWS S3 - Django Storages S3
+# ------------------------------------------------------------------------------
+AWS_STORAGE_BUCKET_NAME = "{{$.aws_s3_bucket_name}}"
+AWS_S3_REGION_NAME = "{{$.aws_s3_direct_region}}"
+AWS_S3_ENDPOINT_URL = f"https://s3.{{$.aws_s3_direct_region}}.amazonaws.com"
+AWS_DEFAULT_ACL = "public-read"
+
+# If you wish to use AWS S3 storage simply comment or remove the line below
+# In this case storage params are defined by config/settings/commons/storage.py
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# ------------------------------------------------------------------------------
+# EMAIL SETTINGS
+# ------------------------------------------------------------------------------
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "{{$.email_host}}"
+EMAIL_HOST_USER = "{{$.email_host_user}}"
+EMAIL_HOST_PASSWORD = "{{$.email_host_password}}"
+EMAIL_PORT = {{$.email_host_port}}
+EMAIL_USE_TLS = "{{$.email_host_use_tls}}".lower() == "true"
+
+
+LOGIN_URL = '/account/login/'
+LOGIN_REDIRECT_URL = '/account/profile/'
+
+
+DO_NOT_SHOW_TOOLBAR_PATHS = [
+    '/customers/import/'
+]
+
+# Make sure we always display debug toolbar
+# if we run in local environment
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK':
+        lambda request: request.path not in DO_NOT_SHOW_TOOLBAR_PATHS,
+}
+
+# Specify apps for django-jenkins
+PROJECT_APPS = LOCAL_APPS
+
+# ------------------------------------------------------------------------------
+# CELERY
+# ------------------------------------------------------------------------------
+# FIXME:
+# APP_LABEL does not work, hacked to string
+CELERY_TASK_DEFAULT_QUEUE = f"macroplate-{ENVIRONMENT}"
+CELERY_BROKER = "redis://{{$.redis_host}}:{{$.redis_port}}/{{$.redis_db}}"
+CELERY_BACKEND = "redis://{{$.redis_host}}:{{$.redis_port}}/{{$.redis_db}}"
+
+# Cache ops
+CACHEOPS_REDIS = {
+    'host': '{{$.redis_host}}',
+    'port': 6379,
+    'db': '{{$.rds_db_host}}',
+    'socket_timeout': 3
+}

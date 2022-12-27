@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+  {% if customers.exists %}
+
+    <h2>Can't delete the Plan Type</h2>
+
+    <p>You can't delete this plan type because there are some customers with this plan type:</p>
+
+    <ul>
+    {% for customer in customers %}
+      <li>
+        <a href="{% url 'customer-detail' customer.id %}">{{ customer.full_name }}</a>
+        {% if customer.latest %}
+          (Historical until {{ customer.last_delivery_date }})
+        {% endif %}
+        {% if customer.meal_assignment_paused %}
+          (Paused)
+        {% endif %}
+      </li>
+    {% endfor %}
+    </ul>
+  {% else %}
+
+    <h2>Delete Plan Type?</h2>
+    <form method="post">
+        {% csrf_token %}
+
+      <p>Are you sure you want to delete <strong>{{ plan_type.name }}</strong> plan type?</p>
+      <button class="btn btn-danger" type="submit">Yes, delete</button>
+      <a class="btn btn-info" href="{% url 'plan-type-update' plan_type.id %}">No</a>
+    </form>
+
+  {% endif %}
+
+{% endblock %}

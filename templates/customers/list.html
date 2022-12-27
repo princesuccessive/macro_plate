@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="d-flex justify-content-between">
+    <h2>Customers</h2>
+      <div class="d-flex">
+        <div>
+          <form class="form-inline">
+            <input name="search"
+                   class="form-control mr-sm-2"
+                   placeholder="Search"
+                   aria-label="Search"
+                   value="{{ request.GET.search }}">
+            <button class="btn btn-outline-success my-2 my-sm-0 mr-sm-2"
+                    type="submit">
+              Search
+            </button>
+            <a class="btn btn-primary mr-sm-2"
+               href="{% url 'customer-add' %}">
+              Add new Customer
+            </a>
+            {% if request.user.is_superuser %}
+              <a class="btn btn-danger mr-sm-2"
+                 href="{% url 'customer-import' %}">
+                Import from CSV
+              </a>
+            {% endif %}
+          </form>
+        </div>
+        {% include "customers/list_filter.html" %}
+      </div>
+  </div>
+
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Full Name</th>
+      <th scope="col">Plan Type</th>
+      <th scope="col"># Preferences</th>
+      <th scope="col">Red</th>
+      <th scope="col">Active</th>
+      <th scope="col">Status</th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for customer in customer_list %}
+      <tr>
+        <th scope="row">{{ forloop.counter0|add:page_obj.start_index }}</th>
+        <td>
+          {{ customer.full_name }}
+          <br>
+          <span class="text-muted">
+            {{ customer.email }}
+          </span>
+        </td>
+        <td>
+          {{ customer.plan_type.name }}
+          <br>
+          <span class="text-muted">
+            {{ customer.plan_priority }}
+          </span>
+        </td>
+        <td>{{ customer.preferences.count }}</td>
+        <td>{% include 'core/yes_no_icon.html' with value=customer.red %}</td>
+        <td>{% include 'core/yes_no_icon.html' with value=customer.is_active %}</td>
+        <td><b>{{ customer.status }}</b></td>
+        <td>
+          <div class="btn-group">
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              Actions
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'customer-detail' customer.id %}">View Details</a>
+              <a class="dropdown-item" href="{% url 'customer-calendar' customer.id %}">View Calendar</a>
+              <a class="dropdown-item" href="{% url 'customer-update' customer.id %}">Edit Details</a>
+              <a class="dropdown-item" href="{% url 'customer-note-add' customer.id %}">Add Note</a>
+            </div>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center">No Customers</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% include "core/pagination.html" with items=page_obj %}
+
+{% endblock %}

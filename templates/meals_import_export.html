@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+  <div id="alert" class="alert" role="alert" style="display: none;"></div>
+
+  <h3>Export data</h3>
+  <hr>
+  <div>
+    Export all Preferences, Ingredients and Meals in one zip archive.<br>
+    <br>
+    <button class="btn btn-info" id="export">
+      Export data
+    </button>
+  </div>
+
+  <br>
+  <br>
+
+  <h3>Import data</h3>
+  <hr>
+  <div>
+    <div
+            id="div_id_file"
+            class="form-group">
+      <label
+              for="id_file"
+              class=" requiredField">
+        ZIP-file<span class="asteriskField">*</span>
+      </label>
+      <div class="custom-file ">
+        <input
+                id="import-file-input"
+                type="file"
+                name="file"
+                class="clearablefileinput form-control custom-file-input"
+                accept=".zip"
+                required>
+        <label class="custom-file-label" for="id_file">Choose file</label>
+      </div>
+    </div>
+    <button
+            id="import-button"
+            type="button"
+            disabled="disabled"
+            class="btn btn-success">
+      Import
+    </button>
+  </div>
+
+  {% csrf_token %}
+  <script>
+    const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+    const alert = $('#alert');
+    const celeryUrl = '{% url 'celery-task-list' %}';
+    const fileInput = $('#import-file-input');
+    const importButton = $('#import-button');
+
+    // Disable import button when file not selected
+    fileInput.change(() => {
+      fileInput.val()
+      importButton.prop('disabled', !fileInput.val());
+    });
+
+    addAsyncAction({
+      buttonId: 'export',
+      celeryUrl,
+      requestData: () => ({
+        name: 'all_meal_data_export',
+        payload: {},
+      }),
+      csrftoken,
+      onSuccess: (info) => {
+        const msg = `The export was successful. Please, open the <a href="${info.file}" target="_blank" class="alert-link">file</a>`;
+        openInNewTab(info.file);
+        showAlert(alert, msg, 'success');
+      },
+      onError: (info) => {
+        showAlert(alert, info.message, 'danger');
+      },
+    });
+
+
+    addAsyncAction({
+      buttonId: 'import-button',
+      celeryUrl: celeryUrl,
+      withFile: true,
+      requestData: () => {
+        const formData = new FormData();
+        formData.append('name', 'all_meal_data_import');
+        formData.append('file', fileInput[0].files[0]);
+        return formData;
+      },
+      csrftoken,
+      onSuccess: (info) => {
+        if (info.error) {
+          const msg = `Import error: ${info.error}`;
+          return showAlert(alert, msg, 'danger');
+        }
+
+        const counters = {
+          preferencesCreated: info.count_preferences_created || 0,
+          ingredientsCreated: info.count_ingredients_created || 0,
+          ingredientsUpdated: info.count_ingredients_updated || 0,
+          mealsCreated: info.count_meals_created || 0,
+          mealsUpdated: info.count_meals_updated || 0,
+        }
+
+        const msg = [
+          `The import was successful.`,
+          `Created ${counters.preferencesCreated} preference(s),`,
+          `${counters.ingredientsCreated} ingredient(s) and`,
+          `${counters.mealsCreated} meal(s).`,
+          `Updated ${counters.ingredientsUpdated} ingredient(s) and`,
+          `${counters.mealsUpdated} meal(s).`,
+        ].join(' ');
+        showAlert(alert, msg, 'success');
+      },
+      onError: (info) => {
+        if (info.status === 400) {
+          return showAlert(alert, info.responseJSON.file[0], 'danger');
+        }
+        showAlert(alert, info.message, 'danger');
+      },
+    });
+  </script>
+{% endblock %}

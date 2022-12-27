@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h2>Meal Details</h2>
+
+  <div class="row">
+    <div class="col-4">
+      <p><strong>Name:</strong> {{ meal.name }}</p>
+      <p><strong>Plan Type:</strong> {{ meal.plan_type }}</p>
+      <p><strong>Breakfast:</strong> {{ meal.breakfast }}</p>
+
+      <a class="btn btn-info" href="{% url 'meal-update' meal.id %}">Edit</a>
+      <a class="btn btn-secondary" href="{% url 'meal-add' %}?copy_id={{ meal.id }}">Copy</a>
+      <a class="btn btn-danger" href="{% url 'meal-delete' meal.id %}">Delete</a>
+    </div>
+    <div class="col-8">
+      <h4>Ingredients</h4>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Ingredient</th>
+          <th scope="col">Quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ingredient in meal.ingredients.all %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ ingredient.ingredient }}</td>
+            <td>{{ ingredient.quantity }}</td>
+          </tr>
+        {% endfor %}
+        {% if not meal.ingredients.exists %}
+          <tr>
+            <td colspan="3" class="text-center">No ingredients</td>
+          </tr>
+        {% endif %}
+        </tbody>
+      </table>
+      <h4>Modifiers</h4>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Ingredient from</th>
+          <th scope="col">Mod Type</th>
+          <th scope="col">Ingredient to</th>
+          <th scope="col">Flex</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for mod in meal.mods.all %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ mod.ingredient_from }}</td>
+            <td>{{ mod.get_mod_type_display }}</td>
+            <td>{{ mod.ingredient_to }}</td>
+            <td>{% include 'core/yes_no_icon.html' with value=mod.is_soft %}</td>
+          </tr>
+        {% endfor %}
+        {% if not meal.mods.exists %}
+          <tr>
+            <td colspan="4" class="text-center">No modifiers</td>
+          </tr>
+        {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+{% endblock %}
+

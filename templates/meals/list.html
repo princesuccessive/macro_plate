@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="d-flex justify-content-between">
+    <h2>Meals</h2>
+    <div>
+      <a class="btn btn-primary" href="{% url 'meal-add' %}">
+        Add new Meal
+      </a>
+    </div>
+  </div>
+
+  {% include 'meals/table.html' %}
+{% endblock %}

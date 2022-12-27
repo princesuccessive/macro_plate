@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h2>Add New Customer</h2>
+  <hr>
+
+    {% include 'customers/base_edit.html' with edit=False  %}
+
+{% endblock %}

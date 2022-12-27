@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h2>Daily Menu Planner</h2>
+
+  <form class="row" method="post" action="{% url 'daily-menu' %}">
+      {% csrf_token %}
+    <div class="col-8">
+        {{ form_date_select.date|as_crispy_field }}
+    </div>
+    <div class="col-4">
+      <div class="form-group">
+        <label for="">&nbsp;</label>
+        <div>
+          <button class="btn btn-info form-control" type="submit">Open</button>
+        </div>
+      </div>
+    </div>
+  </form>
+{% endblock %}
+

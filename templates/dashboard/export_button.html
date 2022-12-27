@@ -1,0 +1,20 @@
+<span class="export-btn-disabled {% if not has_issues and assigned %}hidden{% endif %}"
+      data-toggle="tooltip"
+      data-placement="top"
+        {% if has_issues %}
+      title="Disabled, because some customers have issues"
+        {% else %}
+      title="Disabled, because meals are not assigned"
+        {% endif %}>
+    <a class="btn btn-info disabled"
+       href="#"
+       role="button"
+       href="#">
+      {{ label }}
+    </a>
+  </span>
+
+<button class="btn btn-info export-btn {% if has_issues or not assigned %}hidden{% endif %}"
+        id="{{ id }}">
+  {{ label }}
+</button>

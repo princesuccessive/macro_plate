@@ -1,0 +1,56 @@
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.draggable-item {
+  background: cornflowerblue;
+  width: fit-content;
+  padding: 0 10px;
+  border-radius: 4px;
+  display: inline;
+  margin: 5px 10px;
+  user-select: none;
+}
+
+.calendar-trash {
+  background-color: #ff6054;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.assigned-meal {
+  border-color: transparent;
+  color: white;
+  background: #6F8695;
+}
+
+.breakfast {
+  border-color: transparent;
+  color: black;
+  background-color: #DAB6C4;
+}
+
+.lunch {
+  border-color: transparent;
+  color: black;
+  background-color: #B4DC7F;
+}
+
+.dishes-count {
+  color: #6F8695;
+}
+
+/* spinner */
+.loading {
+  position: absolute;
+  z-index: 999;
+  overflow: visible;
+  background-color: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

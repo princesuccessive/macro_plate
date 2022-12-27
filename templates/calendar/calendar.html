@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="controls">
+    <div id="draggable-container">
+      <div class="draggable-item breakfast"
+           data-event='{"type": "breakfast"}'>
+        breakfast
+      </div>
+      <div class="draggable-item lunch"
+           data-event='{"type": "lunch"}'>
+        lunch
+      </div>
+    </div>
+
+    <div id="fcTrash" class="calendar-trash">
+      <span class="glyphicon glyphicon-trash"></span>
+    </div>
+  </div>
+
+
+  <div style="position: relative">
+    <div id="spinner" class="loading" style="display: none">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+    <div id='calendar'></div>
+  </div>
+
+
+  {% csrf_token %}
+  <script>
+    /** Token for requests */
+    const csrftoken = $('[name=csrfmiddlewaretoken]').val();
+
+    /** Api url for assigned meals */
+    const apiUrlAssigned = '{% url 'api-calendar-assigned-meals' %}';
+
+    /** Api url for scheduled meals */
+    const apiUrlScheduled = '{% url 'api-calendar-scheduled-meals' %}';
+
+    /**
+     * UI url to list of meals
+     * We use this url to concatenate with ID to generate meal link.
+     */
+    const urlListOfMeals = '{% url 'meal-list' %}';
+
+    /** Customer ID */
+    const customerId = '{{ customer_id }}';
+
+    /** Information from default weekly schedule; 0 is Sunday */
+    const defaultWeeklySchedule = {
+      0: {{ default_weekly_schedule.6|default:"0" }},
+      1: {{ default_weekly_schedule.0|default:"0" }},
+      2: {{ default_weekly_schedule.1|default:"0" }},
+      3: {{ default_weekly_schedule.2|default:"0" }},
+      4: {{ default_weekly_schedule.3|default:"0" }},
+      5: {{ default_weekly_schedule.4|default:"0" }},
+      6: {{ default_weekly_schedule.5|default:"0" }},
+    };
+
+    /** First delivery date for customer */
+    const firstDeliveryDate = '{{ first_delivery_date }}';
+
+    /***********************************************************************/
+
+    initializeCustomerCalendar({
+      csrftoken,
+      apiUrlAssigned,
+      apiUrlScheduled,
+      urlListOfMeals,
+      customerId,
+      defaultWeeklySchedule,
+      firstDeliveryDate,
+      calendarElementId: 'calendar',
+      draggableContainerElementId: 'draggable-container',
+      draggableItemSelector: '.draggable-item',
+      trashElementId: 'fcTrash',
+      spinnerElementId: 'spinner',
+    })
+  </script>
+{% endblock %}

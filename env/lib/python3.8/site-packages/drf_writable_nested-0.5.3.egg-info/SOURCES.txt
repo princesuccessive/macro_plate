@@ -1,0 +1,13 @@
+LICENSE.md
+MANIFEST.in
+README.md
+setup.cfg
+setup.py
+drf_writable_nested/__init__.py
+drf_writable_nested/mixins.py
+drf_writable_nested/serializers.py
+drf_writable_nested.egg-info/PKG-INFO
+drf_writable_nested.egg-info/SOURCES.txt
+drf_writable_nested.egg-info/dependency_links.txt
+drf_writable_nested.egg-info/not-zip-safe
+drf_writable_nested.egg-info/top_level.txt

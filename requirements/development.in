@@ -1,0 +1,41 @@
+-r production.in
+
+coverage
+django_coverage_plugin
+django-test-plus
+django-extensions
+django-debug-toolbar
+Werkzeug
+
+# improved REPL
+ipdb
+django-pdb
+ipython
+ipython-genutils
+jupyter
+
+# https://pylama.readthedocs.io/en/latest/#configuration-files
+# linters
+pylama
+pydocstyle
+pycodestyle
+eradicate
+
+# add ability to run tests without migrations
+# usage: ./manage.py test --keepdb --nomigrations
+django-test-without-migrations
+
+# for proper sorting
+isort
+
+# tool for celery monitoring
+flower
+
+# Tool for task and run
+invoke
+
+# Tool for confirm command
+click
+
+# Tool for color in console
+termcolor

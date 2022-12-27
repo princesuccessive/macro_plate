@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+  <h2>Delete Preference?</h2>
+  <form method="post">
+      {% csrf_token %}
+
+    <p>Are you sure you want to delete <strong>{{ preference.name }}</strong> Preference?</p>
+    <button class="btn btn-danger" type="submit">Yes, delete</button>
+    <a class="btn btn-info" href="{% url 'preference-update' preference.id %}">No</a>
+  </form>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h2>Assigned Menus for {{ current_date }}</h2>
+
+  <form class="row" method="post" action="">
+    {% csrf_token %}
+    <div class="col-12">
+      {{ form|as_crispy_errors }}
+    </div>
+    <div class="col-5">
+      {{ form.customer|as_crispy_field }}
+    </div>
+    <div class="col-2">
+      <div class="form-group">
+        <label for="">&nbsp;</label>
+        <div>
+          <button class="btn btn-info form-control" type="submit">Open</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <h3>All assigned menus</h3>
+
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Customer</th>
+      <th scope="col">Plan Name</th>
+      <th scope="col">Assigned Meals</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for menu in menus %}
+      <tr data-href="{% url 'assigned-menus-edit' customer_id=menu.customer_id date=current_date %}"
+          {% if menu.has_issues %}class="table-warning" title="Has issues"{% endif %}>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ menu.customer }}</td>
+        <td>{{ menu.customer.plan_type.name }}</td>
+        <td>{{ menu.assigned_meals.count }} / {{ menu.valid_meals_count }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% include "core/pagination.html" with items=page_obj %}
+{% endblock %}
+

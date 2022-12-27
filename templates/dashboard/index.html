@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div id="dashboard-alert" class="alert" role="alert" style="display: none;"></div>
+
+  <h2>Dashboard ({{ date }})</h2>
+
+  <div class="mt-2">
+    <h4>Assignment</h4>
+    <div class="row">
+      <div class="col-3">
+        <div class="btn-group" role="group">
+          <button class="btn btn-info"
+                  type="button"
+                  name="action"
+                  id="assign-meals"
+                  aria-expanded="false">
+            Assign meals
+          </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-2">
+    <h4>Download exports</h4>
+    <div class="row">
+      <div class="col-12">
+        {% include 'dashboard/export_button.html' with label='Delivery document' id='exports-delivery' %}
+        {% include 'dashboard/export_button.html' with label='Packaging Report' id='exports-packaging' %}
+        {% include 'dashboard/export_button.html' with label='Mod Sheet' id='exports-mod-sheet' %}
+        {% include 'dashboard/export_button.html' with label='Promo Codes' id='exports-promo-codes' %}
+        {% include 'dashboard/export_button.html' with label='Meal Cards' id='exports-meal-cards' %}
+        {% include 'dashboard/export_button.html' with label='Meal Quantity' id='exports-meal-quantity' %}
+      </div>
+    </div>
+  </div>
+
+  {% csrf_token %}
+  <script>
+    const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+    const alert = $('#dashboard-alert');
+    const celeryUrl = '{% url 'celery-task-list' %}';
+
+    addAsyncAction({
+      buttonId: 'assign-meals',
+      celeryUrl,
+      requestData: () => ({
+        name: 'assign_meals',
+        payload: {
+          date: '{{ date }}',
+        },
+      }),
+      csrftoken,
+      onSuccess: (info) => {
+        let msg = `Assignment success. Total assigned: ${info.total}, issues: ${info.issues}.`;
+        showAlert(alert, msg, 'success');
+        if (!info.issues) {
+          $('.export-btn-disabled').addClass('hidden');
+          $('.export-btn').removeClass('hidden');
+        }
+      },
+      onError: (info) => {
+        showAlert(alert, info.message, 'danger');
+      },
+    });
+
+    // exports
+    const configExports = [
+      {id: 'exports-delivery', name: 'delivery_export'},
+      {id: 'exports-packaging', name: 'packaging_export'},
+      {id: 'exports-mod-sheet', name: 'mod_sheet_export'},
+      {id: 'exports-promo-codes', name: 'promo_codes_export'},
+      {id: 'exports-meal-cards', name: 'meal_cards_export'},
+      {id: 'exports-meal-quantity', name: 'meal_quantity_export'},
+    ];
+
+    const onSuccess = (info) => {
+      const msg = `The export was successful. Please, open the <a href="${info.file}" target="_blank" class="alert-link">file</a>`;
+      openInNewTab(info.file);
+      showAlert(alert, msg, 'success');
+    };
+    const onError = (info) => {
+      showAlert(alert, info.message, 'danger');
+    };
+
+    configExports.forEach((config) => {
+      addAsyncAction({
+        buttonId: config.id,
+        celeryUrl,
+        requestData: () => ({
+          name: config.name,
+          payload: {
+            date: '{{ date }}',
+          },
+        }),
+        csrftoken,
+        onSuccess,
+        onError,
+      });
+    });
+  </script>
+{% endblock %}

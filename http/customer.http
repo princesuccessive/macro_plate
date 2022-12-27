@@ -1,0 +1,46 @@
+POST http://{{ host }}/api/customers
+Content-Type: application/json
+Authorization: Token {{ token }}
+
+{
+  "external_id": "1002",
+  "first_name": "Test",
+  "last_name": "User 2",
+  "email": "test@user.com",
+  "phone_number": "88005553535",
+  "address": "",
+  "suite": "",
+  "city": "",
+  "zip": "",
+  "first_delivery_date": "2019-11-25",
+  "delivery_notes": "",
+  "delivery_window": "",
+  "plan_type": {
+    "id": "some-plan",
+    "name": "Some Plan"
+  },
+  "plan_priority": "primary",
+  "dishes_per_day": 4,
+  "five_or_seven_days": "5",
+  "breakfast": true,
+  "snacks_count": 2,
+  "juice_count": 7,
+  "juice_requested": "",
+  "coffee_count": 13,
+  "preferences": [
+    {
+      "name": "Nut 34"
+    },
+    {
+      "name": "Onion"
+    }
+  ],
+  "preferences_notes": "Some notes",
+  "meal_assignment_paused": false,
+  "promo_code": "PROMO2019",
+  "carbs": "some-carbs",
+  "protein": "Some protein",
+  "fat": "Some fat"
+}
+
+###
